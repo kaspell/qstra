@@ -1,0 +1,10 @@
+[package]
+name = "prob"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+prim = { workspace = true }
+stor = { workspace = true }
+
+[lib]

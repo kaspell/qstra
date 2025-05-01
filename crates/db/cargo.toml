@@ -1,0 +1,18 @@
+[package]
+name = "db"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+prob = { workspace = true }
+stor = { workspace = true }
+tokio = { version = "1", features = [
+    "rt",        # Core runtime essentials, including the current_thread scheduler & spawn_blocking
+    "macros",    # For #[tokio::main], tokio::spawn, select! etc.
+    "net",       # For tokio::net::{TcpListener, UnixListener, TcpStream, UnixStream}
+    "sync",      # For tokio::sync::broadcast (used for shutdown signalling)
+    "signal",    # For tokio::signal::ctrl_c
+    "io-util",   # For AsyncReadExt, AsyncWriteExt traits on streams
+    # "time",    # Optional: uncomment if you need tokio::time::{sleep, timeout, Interval}, etc.
+    # "fs",      # Optional: uncomment if your Ctl methods need tokio::fs for async file operations
+] }

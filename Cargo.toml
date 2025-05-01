@@ -1,0 +1,13 @@
+[workspace]
+members = [ "crates/cmd",
+    "crates/db",
+    "crates/prim",
+    "crates/prob",
+    "crates/stor",
+]
+
+[workspace.dependencies]
+db = { path = "crates/db" }
+prob = { path = "crates/prob" }
+prim = { path = "crates/prim" }
+stor = { path = "crates/stor" }

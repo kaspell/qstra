@@ -1,0 +1,5 @@
+/target
+qstra.wal
+qstra.db
+qstra.conf
+/tests
