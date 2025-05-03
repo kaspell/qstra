@@ -1,4 +1,9 @@
+// Copyright © 2025 Kasperi Apell <apkaspell@gmail.com>
+// SPDX-License-Identifier: AGPL-3.0-or-later
+//
+//
 //! Define the main control structure and its bridges to the filesystem.
+
 
 use std::fs;
 use std::io::{self, Read, Write};

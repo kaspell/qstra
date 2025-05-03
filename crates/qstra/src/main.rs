@@ -1,3 +1,7 @@
+// Copyright © 2025 Kasperi Apell <apkaspell@gmail.com>
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+
 use std::cell::RefCell;
 use std::env;
 use std::io;

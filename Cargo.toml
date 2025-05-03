@@ -1,9 +1,13 @@
 [workspace]
-members = [ "crates/qstra",
-    "crates/qstra_prim",
-    "crates/qstra_prob",
-    "crates/qstra_stor",
-]
+members = ["crates/qstra",
+           "crates/qstra_prim",
+           "crates/qstra_prob",
+           "crates/qstra_stor",
+          ]
+
+[workspace.package]
+authors=["Kasperi Apell <apkaspell@gmail.com>"]
+license = "AGPL-3.0-or-later"
 
 [workspace.dependencies]
 qstra = { path = "crates/qstra" }
