@@ -1,11 +1,11 @@
 [package]
-name = "db"
+name = "qstra_"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-prob = { workspace = true }
-stor = { workspace = true }
+qstra_prob = { workspace = true }
+qstra_stor = { workspace = true }
 tokio = { version = "1", features = [
     "rt",        # Core runtime essentials, including the current_thread scheduler & spawn_blocking
     "macros",    # For #[tokio::main], tokio::spawn, select! etc.

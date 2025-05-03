@@ -1,9 +1,9 @@
 [package]
-name = "prim"
+name = "qstra_prim"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-stor  = { workspace = true }
+qstra_stor  = { workspace = true }
 
 [lib]

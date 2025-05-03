@@ -1,5 +1,5 @@
 [package]
-name = "stor"
+name = "qstra_stor"
 version = "0.1.0"
 edition = "2021"
 

@@ -1,0 +1,10 @@
+[package]
+name = "qstra_prob"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+qstra_prim = { workspace = true }
+qstra_stor = { workspace = true }
+
+[lib]

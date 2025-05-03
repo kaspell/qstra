@@ -1,7 +1,7 @@
 use std::io;
 
-use prob::bf::{BloomFilterStructure};
-use stor::srl;
+use qstra_prob::bf::{BloomFilterStructure};
+use qstra_stor::srl;
 
 use crate::reg;
 

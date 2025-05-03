@@ -3,8 +3,8 @@
 use std::fs;
 use std::io::{self, Read, Write};
 
-use prob::bf::{BloomFilterStructure};
-use stor::srl::{self, Deserializable, Serializable};
+use qstra_prob::bf::{BloomFilterStructure};
+use qstra_stor::srl::{self, Deserializable, Serializable};
 
 use crate::cfg;
 use crate::db;

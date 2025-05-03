@@ -2,8 +2,8 @@
 
 use std::io;
 
-use prim::bv;
-use stor::srl::{self};
+use qstra_prim::bv;
+use qstra_stor::srl::{self};
 
 
 #[derive(Debug)]

@@ -2,7 +2,7 @@
 
 use std::io;
 
-use stor::srl;
+use qstra_stor::srl;
 
 
 const USIZE_BITS: usize = 8 * std::mem::size_of::<usize>();

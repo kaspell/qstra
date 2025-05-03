@@ -4,7 +4,7 @@ use std::rc::Rc;
 
 use tokio::io::AsyncWriteExt;
 
-use prob::bf::BloomFilterStructure;
+use qstra_prob::bf::BloomFilterStructure;
 
 use crate::ctl;
 use crate::db;

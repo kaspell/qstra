@@ -1,13 +1,12 @@
 [workspace]
-members = [ "crates/cmd",
-    "crates/db",
-    "crates/prim",
-    "crates/prob",
-    "crates/stor",
+members = [ "crates/qstra",
+    "crates/qstra_prim",
+    "crates/qstra_prob",
+    "crates/qstra_stor",
 ]
 
 [workspace.dependencies]
-db = { path = "crates/db" }
-prob = { path = "crates/prob" }
-prim = { path = "crates/prim" }
-stor = { path = "crates/stor" }
+qstra = { path = "crates/qstra" }
+qstra_prob = { path = "crates/qstra_prob" }
+qstra_prim = { path = "crates/qstra_prim" }
+qstra_stor = { path = "crates/qstra_stor" }
