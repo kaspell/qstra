@@ -6,7 +6,7 @@ use std::fs;
 use std::path::PathBuf;
 
 
-pub const CONF_FILE: &str = "bdb.conf";
+pub const CONF_FILE: &str = "qstra.conf";
 
 
 pub struct Config {
@@ -25,9 +25,9 @@ impl Default for Config {
                         listen_local: true,
                         listen_network: true,
                         inet_addr: "127.0.0.1:1234".into(),
-                        sock_addr: "bdb.sock".into(),
-                        db_file: PathBuf::from("bdb.db"),
-                        wal_file: PathBuf::from("bdb.wal"),
+                        sock_addr: "qstra.sock".into(),
+                        db_file: PathBuf::from("qstra.db"),
+                        wal_file: PathBuf::from("qstra.wal"),
                 }
         }
 }
