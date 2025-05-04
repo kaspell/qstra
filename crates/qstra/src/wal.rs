@@ -4,7 +4,7 @@
 
 use std::fs;
 use std::io::{self, Read, Seek, SeekFrom, Write, ErrorKind};
-use std::path::{PathBuf};
+use std::path::PathBuf;
 
 use crate::cmd;
 use crate::ctl;

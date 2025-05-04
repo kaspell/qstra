@@ -3,7 +3,7 @@
 
 
 use std::fs;
-use std::path::{PathBuf};
+use std::path::PathBuf;
 
 
 pub const CONF_FILE: &str = "bdb.conf";

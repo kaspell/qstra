@@ -8,7 +8,7 @@
 use std::io;
 
 use qstra_prim::bv;
-use qstra_stor::srl::{self};
+use qstra_stor::srl;
 
 
 #[derive(Debug)]
