@@ -68,7 +68,6 @@ impl CmdResponseTLV {
         }
 }
 
-
 #[repr(u8)]
 #[derive(Copy, Clone)]
 pub enum CmdResponseCode {
@@ -213,10 +212,6 @@ struct WriteOpDatabaseNewBloomFilter {
 
 impl WriteOpDatabaseNewBloomFilter {
         fn execute(&self, db: &mut db::Database, resp: &mut CmdResponseTLV) -> io::Result<()> {
-                if self.bf_id > 3 {
-                        resp.init_error_response();
-                        return Ok(());
-                }
                 match db.bf_registry.get(&[self.bf_id]) {
                         Some(_) => {
                                 resp.init_error_response();
@@ -513,26 +508,6 @@ mod tests {
         use super::*;
         use crate::cfg;
         use crate::ctl;
-
-        /*
-        #[tokio::test]
-        async fn test_response() {
-                let conf = cfg::Config::new("test");
-                let mut ctl = ctl::Ctl::new_blank(conf).unwrap();
-                ctl.
-                self.num_dbs = 1;
-                self.curr_db = 0;
-                self.databases[0] = Some(db::Database::new_blank());
-                let ctl_rc = Rc::new(RefCell::new(ctl));
-
-                let inbytes: &[u8] = &[2, 0, 255, 255, 3, 0, 0, 0, 1, 1, 3];
-                let tlv: CmdTLV = inbytes.try_into().unwrap();
-                let cmd = decode_cmd(&tlv).unwrap();
-                let mut resp = CmdResponseTLV::new();
-                dispatch_cmd(&ctl_rc, &cmd, &mut resp).await;
-                assert!(matches!(resp.rc, CmdResponseCode::Error));
-        }
-        */
 
         #[test]
         fn test_parsing() {
