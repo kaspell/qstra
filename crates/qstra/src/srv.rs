@@ -60,7 +60,7 @@ async fn postprocess_cmd(
         tlv: &cmd::CmdTLV<'_>
 ) -> io::Result<()>
 {
-        if let cmd::CmdResponseCode::Error = resp.status() {
+        if let cmd::CmdResponseCode::Error(_) = resp.status() {
                 return Ok(())
         }
         match cmd {

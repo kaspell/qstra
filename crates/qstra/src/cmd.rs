@@ -39,8 +39,8 @@ impl CmdResponseTLV {
         }
 
         #[inline(always)]
-        fn init_error_response(&mut self) {
-                self.rc = CmdResponseCode::Error;
+        fn init_error_response(&mut self, err: CmdError) {
+                self.rc = CmdResponseCode::Error(err);
         }
 
         #[inline(always)]
@@ -58,7 +58,7 @@ impl CmdResponseTLV {
         where S: AsyncWriteExt + Unpin
         {
                 let mut ret = Vec::<u8>::with_capacity(self.val.len() + 1);
-                ret.push(self.rc as u8);
+                ret.push(self.rc.as_u8());
                 ret.extend(&self.val);
                 ret.push(END_SENTINEL);
                 if stream.write_all(&ret).await.is_err() {
@@ -68,11 +68,32 @@ impl CmdResponseTLV {
         }
 }
 
-#[repr(u8)]
+
 #[derive(Copy, Clone)]
 pub enum CmdResponseCode {
-        Success = 0,
-        Error = 1,
+        Success,
+        Error(CmdError),
+}
+
+
+impl CmdResponseCode {
+        #[must_use]
+        fn as_u8(self) -> u8 {
+                match self {
+                        CmdResponseCode::Success => 0,
+                        CmdResponseCode::Error(CmdError::BloomFilterExists) => 1,
+                        CmdResponseCode::Error(CmdError::RequestBytesMalformed) => 2,
+                        CmdResponseCode::Error(CmdError::ObjectNotFound) => 3,
+                }
+        }
+}
+
+
+#[derive(Copy, Clone, Debug)]
+pub enum CmdError {
+        BloomFilterExists,
+        RequestBytesMalformed,
+        ObjectNotFound,
 }
 
 
@@ -160,7 +181,7 @@ impl ReadOpBloomFilterHasBatch<'_> {
                         let lv = match LV::new(&self.elts[idx..]) {
                                 Ok(v) => v,
                                 Err(_) => {
-                                        resp.init_error_response();
+                                        resp.init_error_response(CmdError::RequestBytesMalformed);
                                         return Ok(());
                                 }
                         };
@@ -214,7 +235,7 @@ impl WriteOpDatabaseNewBloomFilter {
         fn execute(&self, db: &mut db::Database, resp: &mut CmdResponseTLV) -> io::Result<()> {
                 match db.bf_registry.get(&[self.bf_id]) {
                         Some(_) => {
-                                resp.init_error_response();
+                                resp.init_error_response(CmdError::BloomFilterExists);
                         }
                         None => {
                                 db.bf_registry.add(BloomFilterStructure::new_default(self.bf_id, db.id), &[self.bf_id])?;
@@ -265,7 +286,7 @@ impl WriteOpBloomFilterAddBatch<'_> {
                         let lv = match LV::new(&self.elts[idx..]) {
                                 Ok(v) => v,
                                 Err(_) => {
-                                        resp.init_error_response();
+                                        resp.init_error_response(CmdError::RequestBytesMalformed);
                                         return Ok(());
                                 }
                         };
@@ -423,7 +444,7 @@ fn handle_read_cmd_bf(cmd: &ReadCmdBloomFilter, ctl: &ctl::Ctl, resp: &mut CmdRe
                         return Ok(());
                 }
         }
-        resp.init_error_response();
+        resp.init_error_response(CmdError::ObjectNotFound);
         Ok(())
 }
 
@@ -438,7 +459,7 @@ fn handle_write_cmd_bf(cmd: &WriteCmdBloomFilter, ctl: &mut ctl::Ctl, resp: &mut
                         return Ok(());
                 }
         }
-        resp.init_error_response();
+        resp.init_error_response(CmdError::ObjectNotFound);
         Ok(())
 }
 
@@ -452,7 +473,7 @@ fn handle_write_cmd_db(cmd: &WriteCmdDatabase, ctl: &mut ctl::Ctl, resp: &mut Cm
                 }
                 return Ok(())
         }
-        resp.init_error_response();
+        resp.init_error_response(CmdError::ObjectNotFound);
         Ok(())
 }
 
@@ -508,6 +529,20 @@ mod tests {
         use super::*;
         use crate::cfg;
         use crate::ctl;
+
+        #[tokio::test]
+        async fn test_response() {
+                let conf = cfg::Config::new("test");
+                let mut ctl = ctl::Ctl::new_blank(conf).unwrap();
+                let ctl_rc = Rc::new(RefCell::new(ctl));
+
+                let inbytes: &[u8] = &[2, 0, 255, 255, 3, 0, 0, 0, 1, 1, 0];
+                let tlv = CmdTLV::new(inbytes).unwrap();
+                let cmd = decode_cmd(&tlv).unwrap();
+                let mut resp = CmdResponseTLV::new();
+                let _ = dispatch_cmd(&ctl_rc, &cmd, &mut resp).await;
+                assert!(matches!(resp.rc, CmdResponseCode::Error));
+        }
 
         #[test]
         fn test_parsing() {
