@@ -26,9 +26,7 @@ impl TryFrom<u8> for SerializableType {
                         2 => Ok(SerializableType::BloomFilterStructure),
                         1 => Ok(SerializableType::Database),
                         0 => Ok(SerializableType::Ctl),
-                        _ => {
-                                return Err(io::Error::new(io::ErrorKind::InvalidData, "Unknown discriminant for SerializableType"));
-                        }
+                        _ => Err(io::Error::new(io::ErrorKind::InvalidData, "Unknown discriminant for SerializableType")),
                 }
         }
 }

@@ -29,7 +29,7 @@ impl BitVec {
         #[inline]
         fn get_idxs(&self, i: usize) -> io::Result<(usize, usize)> {
                 if i >= self.size {
-                        return Err(io::Error::new(io::ErrorKind::UnexpectedEof, format!("impl BitVex: get_idxs: index out of bounds: size is {} but requested index is {}", self.size, i)));
+                        return Err(io::Error::new(io::ErrorKind::UnexpectedEof, format!("impl BitVec: get_idxs: index out of bounds: size is {} but requested index is {}", self.size, i)));
                 }
                 Ok((i/USIZE_BITS, i%USIZE_BITS))
         }

@@ -394,7 +394,7 @@ fn decode_ctl_cmd<'a>(tlv: &'a CmdTLV) -> io::Result<Cmd<'a>> {
         Ok(match cmd_type {
                 0 => { Cmd::Write(WriteCmd::Ctl(WriteCmdCtl { op: WriteOpCtl::WalReplay })) }
                 1 => { Cmd::Write(WriteCmd::Ctl(WriteCmdCtl { op: WriteOpCtl::LoadData })) }
-                2 => { Cmd::Read(ReadCmd::Ctl(ReadCmdCtl { op: ReadOpCtl::WriteData }))}
+                2 => { Cmd::Read(ReadCmd::Ctl(ReadCmdCtl { op: ReadOpCtl::WriteData })) }
                 _ => { return Err(io::Error::new(io::ErrorKind::Other, "decode_ctl_cmd: unrecognized command")); }
         })
 }
@@ -413,12 +413,8 @@ pub fn decode_cmd<'a>(tlv: &'a CmdTLV) -> io::Result<Cmd<'a>> {
 
 fn handle_write_cmd_ctl(cmd: &WriteCmdCtl, ctl: &mut ctl::Ctl, _resp: &mut CmdResponseTLV) -> io::Result<()> {
         match &cmd.op {
-                WriteOpCtl::WalReplay => {
-                        ctl.replay_logging_data()?;
-                }
-                WriteOpCtl::LoadData => {
-                        ctl.load_from_storage()?;
-                }
+                WriteOpCtl::WalReplay => { ctl.replay_logging_data()?; }
+                WriteOpCtl::LoadData => { ctl.load_from_storage()?; }
         }
         Ok(())
 }
@@ -426,9 +422,7 @@ fn handle_write_cmd_ctl(cmd: &WriteCmdCtl, ctl: &mut ctl::Ctl, _resp: &mut CmdRe
 
 fn handle_read_cmd_ctl(cmd: &ReadCmdCtl, ctl: &ctl::Ctl, _resp: &mut CmdResponseTLV) -> io::Result<()> {
         match &cmd.op {
-                ReadOpCtl::WriteData => {
-                        ctl.write_to_storage()?;
-                }
+                ReadOpCtl::WriteData => { ctl.write_to_storage()?; }
         }
         Ok(())
 }
@@ -467,9 +461,7 @@ fn handle_write_cmd_bf(cmd: &WriteCmdBloomFilter, ctl: &mut ctl::Ctl, resp: &mut
 fn handle_write_cmd_db(cmd: &WriteCmdDatabase, ctl: &mut ctl::Ctl, resp: &mut CmdResponseTLV) -> io::Result<()> {
         if let Some(db) = ctl.db_registry.get_mut(&[cmd.db_id]) {
                 match &cmd.op {
-                        WriteOpDatabase::NewBloomFilter(op) => {
-                                op.execute(db, resp)?;
-                        }
+                        WriteOpDatabase::NewBloomFilter(op) => { op.execute(db, resp)?; }
                 }
                 return Ok(())
         }
@@ -536,12 +528,17 @@ mod tests {
                 let mut ctl = ctl::Ctl::new_blank(conf).unwrap();
                 let ctl_rc = Rc::new(RefCell::new(ctl));
 
-                let inbytes: &[u8] = &[2, 0, 255, 255, 3, 0, 0, 0, 1, 1, 0];
+                let inbytes: &[u8] = &[2, 0, 255, 255, 3, 0, 0, 0, 0, 1, 0];
                 let tlv = CmdTLV::new(inbytes).unwrap();
                 let cmd = decode_cmd(&tlv).unwrap();
+                match cmd {
+                        Cmd::Write(WriteCmd::Database(WriteCmdDatabase { db_id, op: WriteOpDatabase::NewBloomFilter(WriteOpDatabaseNewBloomFilter { bf_id })})) => {
+                        }
+                        _ => { assert!(false) }
+                }
                 let mut resp = CmdResponseTLV::new();
                 let _ = dispatch_cmd(&ctl_rc, &cmd, &mut resp).await;
-                assert!(matches!(resp.rc, CmdResponseCode::Error));
+                assert!(matches!(resp.rc, CmdResponseCode::Error(CmdError::ObjectNotFound)));
         }
 
         #[test]
@@ -563,7 +560,7 @@ mod tests {
                         Cmd::Read(ReadCmd::Ctl(ReadCmdCtl { op: ReadOpCtl::WriteData })) => {}
                         _ => { assert!(false) }
                 }
-
+0
                 let inbytes: &[u8] = &[2, 0, 255, 255, 3, 0, 0, 0, 1, 1, 3];
                 match decode_cmd(&CmdTLV::new(inbytes).unwrap()).unwrap() {
                         Cmd::Write(WriteCmd::Database(WriteCmdDatabase { db_id, op: WriteOpDatabase::NewBloomFilter(WriteOpDatabaseNewBloomFilter { bf_id })})) => {
