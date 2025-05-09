@@ -27,6 +27,7 @@ impl WriteAheadLog {
         }
 
         pub fn log(&mut self, bytes: &[u8]) -> io::Result<()> {
+                #[allow(clippy::cast_possible_truncation)]
                 self.writer.write_all(&u16::to_le_bytes(bytes.len() as u16))?;
                 self.writer.write_all(bytes)?;
                 self.writer.flush()?;

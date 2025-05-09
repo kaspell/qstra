@@ -560,7 +560,7 @@ mod tests {
                         Cmd::Read(ReadCmd::Ctl(ReadCmdCtl { op: ReadOpCtl::WriteData })) => {}
                         _ => { assert!(false) }
                 }
-0
+
                 let inbytes: &[u8] = &[2, 0, 255, 255, 3, 0, 0, 0, 1, 1, 3];
                 match decode_cmd(&CmdTLV::new(inbytes).unwrap()).unwrap() {
                         Cmd::Write(WriteCmd::Database(WriteCmdDatabase { db_id, op: WriteOpDatabase::NewBloomFilter(WriteOpDatabaseNewBloomFilter { bf_id })})) => {
