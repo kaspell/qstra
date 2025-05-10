@@ -44,12 +44,6 @@ impl Config {
                                 continue;
                         }
                         match line.split_once('=') {
-                                Some(("DB_FILE", val)) => {
-                                        cfg.db_file = PathBuf::from(val);
-                                }
-                                Some(("WAL_FILE", val)) => {
-                                        cfg.wal_file = PathBuf::from(val);
-                                }
                                 Some(("LISTEN_LOCAL", val)) => {
                                         cfg.listen_local = val.to_lowercase().parse().unwrap_or(false);
                                 }
