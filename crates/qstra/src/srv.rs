@@ -48,7 +48,9 @@ where S: AsyncRead + AsyncWrite + Unpin,
 
                 println!("Response sent to client.");
 
-                postprocess_cmd(&ctl_rc, &cmd, &resp, &tlv).await?;
+                if ctl_rc.try_borrow().ok().map_or(false, |c| c.config().wal_mode > 0) {
+                        postprocess_cmd(&ctl_rc, &cmd, &resp, &tlv).await?;
+                }
         }
 }
 

@@ -16,6 +16,7 @@ pub struct Config {
         pub sock_addr: String,
         pub db_file: PathBuf,
         pub wal_file: PathBuf,
+        pub wal_mode: u32,
 }
 
 
@@ -28,6 +29,7 @@ impl Default for Config {
                         sock_addr: "qstra.sock".into(),
                         db_file: PathBuf::from("qstra.db"),
                         wal_file: PathBuf::from("qstra.wal"),
+                        wal_mode: 1,
                 }
         }
 }
@@ -55,6 +57,9 @@ impl Config {
                                 }
                                 Some(("UNIX_SOCKET", val)) => {
                                         cfg.sock_addr = val.into();
+                                }
+                                Some(("WAL_MODE", val)) => {
+                                        cfg.wal_mode = val.parse::<u32>().unwrap_or(1);
                                 }
                                 _ => {}
                         }
